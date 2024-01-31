@@ -26,7 +26,7 @@ Network architecture (default deployment):
 collector_auth: ...
 lambda_auth: ...
 ```
-7. run the following commands:
+7. Run the following commands:
 ```sh
 terraform init
 terraform apply
