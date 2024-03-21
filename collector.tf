@@ -113,6 +113,13 @@ resource "aws_security_group" "collector" {
   #   protocol    = "tcp"
   #   cidr_blocks = var.collector_sg_ingress_cidr_blocks
   # }
+  ingress {
+    description = "Health check for oTel"
+    from_port   = 13133
+    to_port     = 13133
+    protocol    = "tcp"
+    cidr_blocks = var.collector_sg_ingress_cidr_blocks
+  }
   egress {
     description      = "Outbound all"
     from_port        = 0

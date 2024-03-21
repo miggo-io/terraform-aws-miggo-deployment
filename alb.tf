@@ -19,6 +19,7 @@ resource "aws_lb_target_group" "collector_http" {
   target_type = "ip"
   vpc_id      = var.create_vpc ? module.vpc[0].vpc_id : var.vpc_id
   health_check {
+    port     = 13133
     protocol = "HTTP"
     path     = "/"
   }
