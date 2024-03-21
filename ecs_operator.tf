@@ -20,6 +20,7 @@ resource "aws_lambda_function" "LambdaFunction" {
       ECS_CLUSTER_NAME = local.cluster_name
       MIGGO_CONFIG_ARN = "s3://${try(var.ecs_operator_s3.bucket, null)}/${var.tenant_id}/lambda/config.json"
       TENANT_ID = var.tenant_id
+      MIGGO_INFRA_AGENT_ENDPOINT = aws_route53_record.collector[0].fqdn
       # MIGGO_LOGGING_ROLE_ARN = ""
       # MIGGO_ROLE_EXTERNAL_ID = ""
       # SENTRY_DSN             = ""

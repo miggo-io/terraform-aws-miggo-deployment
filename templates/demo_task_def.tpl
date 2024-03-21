@@ -18,6 +18,10 @@
       {
         "name": "NODE_ENV",
         "value": "development"
+      },
+      {
+        "name": "OTEL_LOG_LEVEL",
+        "value": "debug"
       }
     ],
     "logConfiguration": {
