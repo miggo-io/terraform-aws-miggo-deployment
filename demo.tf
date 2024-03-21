@@ -28,14 +28,13 @@ resource "aws_ecs_task_definition" "demo" {
   count = var.deploy_demo_app ? 1 : 0
 
   family                   = local.demo_settings.container_name
-  requires_compatibilities = ["FARGATE"]
+  requires_compatibilities = var.fargate ? ["FARGATE"] : ["EC2"]
   network_mode             = "awsvpc"
   cpu                      = local.demo_settings.task_cpu
   memory                   = local.demo_settings.task_memory
   execution_role_arn       = aws_iam_role.task_exec_role[0].arn
   task_role_arn            = aws_iam_role.task_exec_role[0].arn
   container_definitions    = local.demo_definition
-
 
 }
 
