@@ -85,7 +85,7 @@
         "-c"
     ],
     "command": [
-        "wget -O /conf/miggo/collector.yaml https://raw.githubusercontent.com/miggo-io/terraform-aws-miggo-deployment/init/configs/collector.yaml"
+        "wget -O /conf/miggo/collector.yaml https://raw.githubusercontent.com/miggo-io/terraform-aws-miggo-deployment/init/configs/collector.yaml && cat /conf/miggo/collector.yaml"
     ],
     "environment": [],
     "environmentFiles": [],

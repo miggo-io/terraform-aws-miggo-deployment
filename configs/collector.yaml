@@ -20,6 +20,7 @@ exporters:
     verbosity: detailed
 
 service:
+  extensions: [health_check]
   pipelines:
     traces:
       receivers: [otlp]
@@ -31,4 +32,4 @@ service:
       exporters: [debug]
 
 extensions:
-  health_check:
+  health_check: {}
