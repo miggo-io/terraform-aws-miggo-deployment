@@ -3,14 +3,14 @@
     "name": "${name}",
     "image": "${collector_image}:${collector_version}",
     "repositoryCredentials": {
-        "credentialsParameter": "${docker_hub_arn_secret}"
-    }
+        "credentialsParameter": "${dockerhub_secret_arn}"
+    },
     "cpu": ${cpu},
     "memory": ${memory},
     "memoryReservation": ${memory},
     "essential": true,
     "command": [
-      '--config=/conf/miggo/collector.yaml'
+      "--config=/conf/miggo/collector.yaml"
     ],
     "mountPoints": [
       {
@@ -64,7 +64,7 @@
         "retries": 3,
         "command": [
             "CMD-SHELL",
-            "wget http://localhost:13133/ -O /dev/null || exit 1"
+            "curl -f http://localhost:13133/ || exit 1"
         ],
         "timeout": 5,
         "interval": 30,
@@ -77,12 +77,15 @@
     "cpu": 0,
     "portMappings": [],
     "essential": false,
+    "repositoryCredentials": {
+        "credentialsParameter": "${dockerhub_secret_arn}"
+    },
     "entryPoint": [
         "/bin/sh",
         "-c"
     ],
     "command": [
-        "wget -O /conf/miggo/collector.yaml \"https://raw.githubusercontent.com/miggo-io/terraform-aws-miggo-deployment/main/configs/collector.yaml\""
+        "wget -O /conf/miggo/collector.yaml https://raw.githubusercontent.com/miggo-io/terraform-aws-miggo-deployment/init/configs/collector.yaml"
     ],
     "environment": [],
     "environmentFiles": [],

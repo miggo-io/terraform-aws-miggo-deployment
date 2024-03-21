@@ -5,7 +5,7 @@ data "aws_route53_zone" "selected" {
 }
 
 resource "aws_route53_zone" "sub_domain" {
-  count   = var.create_vpc ? 1 : 0
+  count = var.create_vpc ? 1 : 0
 
   name    = "${var.environment}.${var.domain_name}"
   comment = "${var.environment}.${var.domain_name}"
@@ -19,7 +19,7 @@ resource "aws_route53_zone" "sub_domain" {
 }
 
 resource "aws_route53_record" "sub_domain" {
-  count           = var.create_vpc ? 1 : 0
+  count = var.create_vpc ? 1 : 0
 
   allow_overwrite = true
   zone_id         = data.aws_route53_zone.selected.zone_id
@@ -30,8 +30,8 @@ resource "aws_route53_record" "sub_domain" {
 }
 
 resource "aws_route53_record" "collector" {
-  count = var.deploy_collector  ? 1 : 0
-  depends_on = [ module.acm ]
+  count      = var.deploy_collector ? 1 : 0
+  depends_on = [module.acm]
 
   zone_id = var.create_vpc ? aws_route53_zone.sub_domain[0].id : data.aws_route53_zone.selected.id
   name    = "collector.${var.environment}.${var.domain_name}"
@@ -64,9 +64,9 @@ module "acm" {
 ### Demo application
 
 resource "aws_route53_record" "demo" {
-  count = var.deploy_demo_app ? 1 : 0
-  depends_on = [ module.acm ]
-  
+  count      = var.deploy_demo_app ? 1 : 0
+  depends_on = [module.acm]
+
   zone_id = var.create_vpc ? aws_route53_zone.sub_domain[0].id : data.aws_route53_zone.selected.id
   name    = "demo.${var.environment}.${var.domain_name}"
   type    = "A"

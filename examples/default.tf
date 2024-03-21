@@ -5,7 +5,7 @@ module "miggo" {
     environment = "miggo"
     miggo_secret_name = "MIGGO_SECRET_NAME"
     dockerhub_secret_name = "MIGGO_SECRET_NAME"
-    miggo_tenant_id = "MIGGO_TENAT_ID"
+    tenant_id = "MIGGO_TENAT_ID"
 
     domain_name = "YOUR_DOMAIN"
     public = true

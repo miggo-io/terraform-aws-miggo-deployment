@@ -11,21 +11,21 @@ locals {
   }
 
   collector_definition = templatefile(("${path.module}/templates/collector_task_def.tpl"), {
-    name                  = local.collector_settings.container_name
-    cpu                   = local.collector_settings.container_cpu
-    memory                = local.collector_settings.container_memory
-    port_http             = local.collector_settings.container_port_http
-    port_grpc             = local.collector_settings.container_port_grpc
-    log_group             = try(aws_cloudwatch_log_group.miggo.name,"")
-    log_stream            = try(aws_cloudwatch_log_stream.collector_log_stream[0].name, "")
-    aws_region            = local.region
-    additional_env_vars   = var.additional_collector_env_vars
-    environment           = var.environment
-    docker_hub_arn_secret = try(data.aws_secretsmanager_secret.dockerhub[0].id, "")
-    miggo_secret          = try(jsonencode(data.aws_secretsmanager_secret_version.miggo[0].secret_string)["COLLECTOR_AUTH"], "")
-    collector_image       = var.collector_image
-    collector_version     = var.collector_version
-    miggo_endpoint        = var.miggo_endpoint
+    name                 = local.collector_settings.container_name
+    cpu                  = local.collector_settings.container_cpu
+    memory               = local.collector_settings.container_memory
+    port_http            = local.collector_settings.container_port_http
+    port_grpc            = local.collector_settings.container_port_grpc
+    log_group            = try(aws_cloudwatch_log_group.miggo.name, "")
+    log_stream           = try(aws_cloudwatch_log_stream.collector_log_stream[0].name, "")
+    aws_region           = local.region
+    additional_env_vars  = var.additional_collector_env_vars
+    environment          = var.environment
+    dockerhub_secret_arn = "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:secret:${var.dockerhub_secret_name}"
+    miggo_secret         = try(sensitive(jsondecode(data.aws_secretsmanager_secret_version.miggo[0].secret_string)["MIGGO_OTEL_AUTH"]), "")
+    collector_image      = var.collector_image
+    collector_version    = var.collector_version
+    miggo_endpoint       = var.miggo_endpoint
   })
 
 }
@@ -56,21 +56,31 @@ resource "aws_ecs_service" "collector" {
   cluster         = var.create_cluster ? aws_ecs_cluster.miggo[0].id : data.aws_ecs_cluster.provided[0].id
   task_definition = aws_ecs_task_definition.collector[0].arn
   desired_count   = var.collector_replicas
-  launch_type     = "FARGATE"
+  launch_type     = "FARGATE" 
+  # launch_type     = var.fargate ? "FARGATE" : null
   network_configuration {
     security_groups = [aws_security_group.collector[0].id]
     subnets         = var.create_vpc ? module.vpc[0].private_subnets : var.vpc_private_subnets
   }
   load_balancer {
-    target_group_arn = aws_lb_target_group.collector[0].arn
+    target_group_arn = aws_lb_target_group.collector_http[0].arn
     container_name   = local.collector_settings.container_name
     container_port   = local.collector_settings.container_port_http
   }
-  load_balancer {
-    target_group_arn = aws_lb_target_group.collector[0].arn
-    container_name   = local.collector_settings.container_name
-    container_port   = local.collector_settings.container_port_grpc
-  }
+  # load_balancer {
+  #   target_group_arn = aws_lb_target_group.collector_grpc[0].arn
+  #   container_name   = local.collector_settings.container_name
+  #   container_port   = local.collector_settings.container_port_grpc
+  # }
+
+  # dynamic "capacity_provider_strategy" {
+  #   for_each = var.fargate ? [1] : [0]
+  #   content {
+  #     capacity_provider = aws_ecs_capacity_provider.main[0].name
+  #     base              = 1
+  #     weight            = 100
+  #   }
+  # }
 
 }
 
@@ -96,13 +106,13 @@ resource "aws_security_group" "collector" {
     protocol    = "tcp"
     cidr_blocks = var.collector_sg_ingress_cidr_blocks
   }
-  ingress {
-    description = "Inbound from ALB to collector for grpc"
-    from_port   = local.collector_settings.container_port_grpc
-    to_port     = local.collector_settings.container_port_grpc
-    protocol    = "tcp"
-    cidr_blocks = var.collector_sg_ingress_cidr_blocks
-  }
+  # ingress {
+  #   description = "Inbound from ALB to collector for grpc"
+  #   from_port   = local.collector_settings.container_port_grpc
+  #   to_port     = local.collector_settings.container_port_grpc
+  #   protocol    = "tcp"
+  #   cidr_blocks = var.collector_sg_ingress_cidr_blocks
+  # }
   egress {
     description      = "Outbound all"
     from_port        = 0

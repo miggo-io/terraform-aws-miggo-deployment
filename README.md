@@ -28,7 +28,7 @@ aws secretsmanager create-secret --name miggo_dockerhub --secret-string {\"PASSW
 ```
 The second with the following keys (Values provided by Miggo):
 ```sh
-aws secretsmanager create-secret --name miggo --secret-string {\"COLLECTOR_AUTH\":\"PASSWORDVALUE\", \"LAMBDA_AUTH\":\"PASSWORDVALUE\"}
+aws secretsmanager create-secret --name miggo --secret-string {\"MIGGO_OTEL_AUTH\":\"PASSWORDVALUE\", \"LAMBDA_AUTH\":\"PASSWORDVALUE\"}
 ```
 7. Run the following commands:
 ```sh

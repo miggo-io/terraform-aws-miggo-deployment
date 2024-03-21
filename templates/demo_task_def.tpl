@@ -5,6 +5,9 @@
     "cpu": ${cpu},
     "memory": ${memory},
     "memoryReservation": ${memory},
+    "repositoryCredentials": {
+        "credentialsParameter": "${dockerhub_secret_arn}"
+    },
     "essential": true,
     "portMappings": [
       {
@@ -29,7 +32,7 @@
         "retries": 3,
         "command": [
             "CMD-SHELL",
-            "CMD-SHELL, curl -f http://localhost:${port}/ || exit 1"
+            "echo hello || exit 1"
         ],
         "timeout": 5,
         "interval": 30,

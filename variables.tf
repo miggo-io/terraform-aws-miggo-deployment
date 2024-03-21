@@ -24,17 +24,23 @@ variable "create_cluster" {
   description = "whether create a cluster or use existing one"
 }
 
-#should be configured only of create_cluster = false
+variable "fargate" {
+  type = bool
+  default = true
+  description = "whether the created cluster should run on fargate"
+}
+
+#if create_cluster = false provide existing cluster name
 variable "cluster_name" {
   type        = string
   default     = ""
-  description = "ECS cluster name, if we want to deploy to existing one"
+  description = "ECS cluster name, if we want to deploy to existing one or rename cluster name"
 }
 
 ## Miggo variables
 variable "tenant_id" {
-  type = string
-  default = ""
+  type        = string
+  default     = ""
   description = "Miggo tenant ID"
 }
 
@@ -63,8 +69,8 @@ variable "ecs_operator_s3" {
     version = string
   })
   default = {
-    bucket = ""
-    key = ""
+    bucket  = ""
+    key     = ""
     version = ""
   }
   description = "Needed for fetching the lambda from Miggo s3 bucket"
@@ -94,7 +100,7 @@ variable "collector_version" {
 
 variable "collector_image" {
   type        = string
-  default     = "miggo/collector"
+  default     = "miggoprod/miggo-infra-agent"
   description = "collector image name"
 }
 
@@ -109,7 +115,7 @@ variable "dockerhub_secret_name" {
 }
 
 variable "miggo_endpoint" {
-  type = string
+  type    = string
   default = "https://collector.miggo.io"
 }
 
@@ -183,5 +189,5 @@ variable "demo_sg_ingress_cidr_blocks" {
 
 variable "public" {
   default = false
-  type = bool
+  type    = bool
 }
