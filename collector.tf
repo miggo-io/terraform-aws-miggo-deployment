@@ -4,9 +4,6 @@ locals {
     container_name      = "${var.environment}-collector"
     task_cpu            = var.collector_resource.cpu
     task_memory         = var.collector_resource.memory
-    onprem_enabled      = true
-    dop_no_ssl_verify   = false
-    server_mode         = "PLAIN"
     container_cpu       = var.collector_resource.cpu
     container_memory    = var.collector_resource.memory
     container_port_http = 4318
@@ -19,12 +16,16 @@ locals {
     memory                = local.collector_settings.container_memory
     port_http             = local.collector_settings.container_port_http
     port_grpc             = local.collector_settings.container_port_grpc
-    log_group             = aws_cloudwatch_log_group.miggo.name
-    log_stream            = aws_cloudwatch_log_stream.collector_log_stream[0].name
+    log_group             = try(aws_cloudwatch_log_group.miggo.name,"")
+    log_stream            = try(aws_cloudwatch_log_stream.collector_log_stream[0].name, "")
     aws_region            = local.region
     additional_env_vars   = var.additional_collector_env_vars
     environment           = var.environment
-    docker_hub_arn_secret = data.aws_secretsmanager_secret.dockerhub[0].id
+    docker_hub_arn_secret = try(data.aws_secretsmanager_secret.dockerhub[0].id, "")
+    miggo_secret          = try(jsonencode(data.aws_secretsmanager_secret_version.miggo[0].secret_string)["COLLECTOR_AUTH"], "")
+    collector_image       = var.collector_image
+    collector_version     = var.collector_version
+    miggo_endpoint        = var.miggo_endpoint
   })
 
 }
@@ -42,6 +43,9 @@ resource "aws_ecs_task_definition" "collector" {
   task_role_arn            = aws_iam_role.task_exec_role[0].arn
   container_definitions    = local.collector_definition
 
+  volume {
+    name = "otel-config"
+  }
 
 }
 
@@ -54,13 +58,18 @@ resource "aws_ecs_service" "collector" {
   desired_count   = var.collector_replicas
   launch_type     = "FARGATE"
   network_configuration {
-    security_groups = [aws_security_group.collector.id]
+    security_groups = [aws_security_group.collector[0].id]
     subnets         = var.create_vpc ? module.vpc[0].private_subnets : var.vpc_private_subnets
   }
   load_balancer {
     target_group_arn = aws_lb_target_group.collector[0].arn
     container_name   = local.collector_settings.container_name
-    container_port   = local.collector_settings.container_port
+    container_port   = local.collector_settings.container_port_http
+  }
+  load_balancer {
+    target_group_arn = aws_lb_target_group.collector[0].arn
+    container_name   = local.collector_settings.container_name
+    container_port   = local.collector_settings.container_port_grpc
   }
 
 }
@@ -81,9 +90,16 @@ resource "aws_security_group" "collector" {
   description = "Allow inbound/outbound traffic for Miggo collector"
   vpc_id      = var.create_vpc ? module.vpc[0].vpc_id : var.vpc_id
   ingress {
-    description = "Inbound from ALB to collector"
-    from_port   = local.collector_settings.container_port
-    to_port     = local.collector_settings.container_port
+    description = "Inbound from ALB to collector for http"
+    from_port   = local.collector_settings.container_port_http
+    to_port     = local.collector_settings.container_port_http
+    protocol    = "tcp"
+    cidr_blocks = var.collector_sg_ingress_cidr_blocks
+  }
+  ingress {
+    description = "Inbound from ALB to collector for grpc"
+    from_port   = local.collector_settings.container_port_grpc
+    to_port     = local.collector_settings.container_port_grpc
     protocol    = "tcp"
     cidr_blocks = var.collector_sg_ingress_cidr_blocks
   }

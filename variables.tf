@@ -44,6 +44,12 @@ variable "deploy_collector" {
   description = "(Optional) If true will deploy will deploy collector as ECS service"
 }
 
+variable "deploy_demo_app" {
+  type        = bool
+  default     = false
+  description = "(Optional) If true will deploy will deploy collector as ECS service"
+}
+
 variable "deploy_ecs_operator" {
   type        = bool
   default     = true
@@ -51,11 +57,16 @@ variable "deploy_ecs_operator" {
 }
 
 variable "ecs_operator_s3" {
-  type = map({
+  type = object({
     bucket  = string
     key     = string
     version = string
   })
+  default = {
+    bucket = ""
+    key = ""
+    version = ""
+  }
   description = "Needed for fetching the lambda from Miggo s3 bucket"
 }
 
@@ -97,6 +108,10 @@ variable "dockerhub_secret_name" {
   description = "Dockerhub secert name"
 }
 
+variable "miggo_endpoint" {
+  type = string
+  default = "https://collector.miggo.io"
+}
 
 ## VPC variables. 
 variable "create_vpc" {
@@ -158,4 +173,15 @@ variable "collector_sg_ingress_cidr_blocks" {
   type        = list(string)
   default     = ["0.0.0.0/0"]
   description = "Ingress CIDRs of Miggo collector security group"
+}
+
+variable "demo_sg_ingress_cidr_blocks" {
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+  description = "Ingress CIDRs of Miggo collector security group"
+}
+
+variable "public" {
+  default = false
+  type = bool
 }

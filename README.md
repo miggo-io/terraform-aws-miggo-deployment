@@ -23,14 +23,12 @@ Network architecture (default deployment):
 5. Create a `main.tf` and configure the module inputs. Here are [Miggo examples](https://github.com/miggo-io/terraform-aws-miggo-deployment/tree/main/examples)
 6. Create a two secrets in AWS Secret Manager. 
 First for dockerhub with the following keys (Values provided by Miggo): 
-```
-username: ...
-password: ...
+```sh
+aws secretsmanager create-secret --name miggo_dockerhub --secret-string {\"PASSWORD\":\"PASSWORDVALUE\", \"USERNAME\":\"USERNAMEVALUE\"}
 ```
 The second with the following keys (Values provided by Miggo):
-```
-collector_auth: ...
-lambda_auth: ...
+```sh
+aws secretsmanager create-secret --name miggo --secret-string {\"COLLECTOR_AUTH\":\"PASSWORDVALUE\", \"LAMBDA_AUTH\":\"PASSWORDVALUE\"}
 ```
 7. Run the following commands:
 ```sh

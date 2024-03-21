@@ -8,6 +8,7 @@ module "miggo" {
     miggo_tenant_id = "MIGGO_TENAT_ID"
 
     domain_name = "YOUR_DOMAIN"
+    public = true
 
     ecs_operator_s3 = {
         bucket = "..."
