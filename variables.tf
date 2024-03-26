@@ -25,8 +25,8 @@ variable "create_cluster" {
 }
 
 variable "fargate" {
-  type = bool
-  default = true
+  type        = bool
+  default     = true
   description = "whether the created cluster should run on fargate"
 }
 

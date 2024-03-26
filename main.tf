@@ -109,7 +109,7 @@ data "aws_ami" "amzn" {
 
 resource "aws_launch_template" "ecs_ec2" {
   count = var.create_cluster && !var.fargate ? 1 : 0
-  
+
   name_prefix            = "${var.environment}-ecs-ec2-"
   image_id               = data.aws_ami.amzn[0].image_id
   instance_type          = "t2.micro"

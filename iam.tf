@@ -2,12 +2,12 @@
 resource "aws_iam_role" "task_exec_role" {
   count = var.custom_iam_task_exec_role_arn == "" ? 1 : 0
 
-  name                = "${var.environment}-task-exec"
+  name = "${var.environment}-task-exec"
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
-    aws_iam_policy.task_exec_policy[0].arn, 
+    aws_iam_policy.task_exec_policy[0].arn,
     aws_iam_policy.dockerhub_secret[0].arn,
-    ]
+  ]
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

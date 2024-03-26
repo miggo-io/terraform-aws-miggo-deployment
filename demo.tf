@@ -10,14 +10,14 @@ locals {
   }
 
   demo_definition = templatefile(("${path.module}/templates/demo_task_def.tpl"), {
-    name        = local.demo_settings.container_name
-    cpu         = local.demo_settings.container_cpu
-    memory      = local.demo_settings.container_memory
-    port        = local.demo_settings.container_port
-    log_group   = try(aws_cloudwatch_log_group.miggo.name, "")
-    log_stream  = try(aws_cloudwatch_log_stream.demo_log_stream[0].name, "")
-    aws_region  = local.region
-    environment = var.environment
+    name                 = local.demo_settings.container_name
+    cpu                  = local.demo_settings.container_cpu
+    memory               = local.demo_settings.container_memory
+    port                 = local.demo_settings.container_port
+    log_group            = try(aws_cloudwatch_log_group.miggo.name, "")
+    log_stream           = try(aws_cloudwatch_log_stream.demo_log_stream[0].name, "")
+    aws_region           = local.region
+    environment          = var.environment
     dockerhub_secret_arn = "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:secret:${var.dockerhub_secret_name}"
   })
 
