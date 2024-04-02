@@ -1,14 +1,18 @@
 name: Lint Commit
-
 on: pull_request
+
+permissions:
+  contents: read
+  pull-requests: read
 
 jobs:
   conventional:
-    name: Conventional PR
+    name: Conventional Commit Linter
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
-      - uses: beemojs/conventional-pr-action@v2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - uses: taskmedia/action-conventional-commits@v1.1.13
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          types: "fix|feat|revert|ci|docs|chore"

@@ -12,3 +12,5 @@ jobs:
         with:
           release-type: terraform-module
           package-name: release-please-action
+          # https://github.com/orgs/community/discussions/25281
+          token: ${{ secrets.GIT_TOKEN }}
