@@ -35,7 +35,7 @@ resource "aws_ecs_task_definition" "collector" {
   count = var.deploy_collector ? 1 : 0
 
   family                   = local.collector_settings.container_name
-  requires_compatibilities = ["FARGATE"]
+  requires_compatibilities = var.fargate ? ["FARGATE"] : ["EC2"]
   network_mode             = "awsvpc"
   cpu                      = local.collector_settings.task_cpu
   memory                   = local.collector_settings.task_memory
