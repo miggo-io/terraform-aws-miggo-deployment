@@ -35,7 +35,7 @@ resource "aws_ecs_task_definition" "collector" {
   count = var.deploy_collector ? 1 : 0
 
   family                   = local.collector_settings.container_name
-  requires_compatibilities = var.fargate ? ["FARGATE"] : ["EC2"]
+  requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = local.collector_settings.task_cpu
   memory                   = local.collector_settings.task_memory
@@ -56,8 +56,7 @@ resource "aws_ecs_service" "collector" {
   cluster         = var.create_cluster ? aws_ecs_cluster.miggo[0].id : data.aws_ecs_cluster.provided[0].id
   task_definition = aws_ecs_task_definition.collector[0].arn
   desired_count   = var.collector_replicas
-  launch_type     = "FARGATE"
-  # launch_type     = var.fargate ? "FARGATE" : null
+  launch_type     = var.fargate ? ["FARGATE"] : ["EC2"]
   network_configuration {
     security_groups = [aws_security_group.collector[0].id]
     subnets         = var.create_vpc ? module.vpc[0].private_subnets : var.vpc_private_subnets
