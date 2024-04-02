@@ -1,0 +1,35 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+      grpc:
+
+processors:
+  batch:
+    send_batch_size: 100
+    send_batch_max_size: 100
+    timeout: 10s
+
+exporters:
+  otlphttp/pipeline:
+    traces_endpoint: ${env:MIGGO_TRACES_ENDPOINT}
+    headers:
+      Authorization: Basic ${env:MIGGO_OTEL_AUTH}
+
+  debug:
+    verbosity: detailed
+
+service:
+  extensions: [health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp/pipeline, debug]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]
+
+extensions:
+  health_check: {}
