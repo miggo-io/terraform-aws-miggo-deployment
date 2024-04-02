@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/miggo-io/terraform-aws-miggo-deployment/compare/v0.2.0...v0.3.0) (2024-04-02)
+
+
+### Features
+
+* collector ec2 support ([#6](https://github.com/miggo-io/terraform-aws-miggo-deployment/issues/6)) ([7d5a776](https://github.com/miggo-io/terraform-aws-miggo-deployment/commit/7d5a7767da56ad1988399c104a2a64b70ff9af2a))
+
 ## [0.2.0](https://github.com/miggo-io/terraform-aws-miggo-deployment/compare/v0.1.0...v0.2.0) (2024-04-02)
 
 
