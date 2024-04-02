@@ -56,7 +56,7 @@ resource "aws_ecs_service" "collector" {
   cluster         = var.create_cluster ? aws_ecs_cluster.miggo[0].id : data.aws_ecs_cluster.provided[0].id
   task_definition = aws_ecs_task_definition.collector[0].arn
   desired_count   = var.collector_replicas
-  launch_type     = var.fargate ? ["FARGATE"] : ["EC2"]
+  launch_type     = var.fargate ? "FARGATE" : null
   network_configuration {
     security_groups = [aws_security_group.collector[0].id]
     subnets         = var.create_vpc ? module.vpc[0].private_subnets : var.vpc_private_subnets
