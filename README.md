@@ -7,11 +7,11 @@ This Terraform module deploys Miggo Collector and Miggo Operator for ECS, based 
 
 The is the module architecture:
 
-<img src="https://github.com/miggo-io/terraform-aws-miggo-deployment/blob/main/imges/ECS_Terraform_Deployment.jpg?raw=true" width="900">
+<img src="https://github.com/miggo-io/terraform-aws-miggo-deployment/blob/main/images/ECS_Terraform_Deployment.jpg?raw=true" width="900">
 
 Network architecture (default deployment):
 
-<img src="https://github.com/miggo-io/terraform-aws-miggo-deployment/blob/main/imges/ECS_Terraform_Deployment_Network.jpg?raw=true" width="900">
+<img src="https://github.com/miggo-io/terraform-aws-miggo-deployment/blob/main/images/ECS_Terraform_Deployment_Network.jpg?raw=true" width="900">
 
 
 ## Usage

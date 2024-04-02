@@ -1,5 +1,5 @@
 module "miggo" {
-  source  = "MiggoIO/miggo-deployment/aws"    
+  source  = "miggo-io/miggo-deployment/aws"    
   # version = x.y.z
   
   environment           = "miggo"
